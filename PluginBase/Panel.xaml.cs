@@ -35,6 +35,7 @@ namespace CodeA
 
         private void Set(object sender, EventArgs e)
         {
+            MessageBox.Show("1");
             txtFirght.Text = string.Format("{0}/36", Counter.Fright);
             txtWin.Text = string.Format("{0}/6", Counter.RankS);
             txtBoss.Text = string.Format("{0}/24", Counter.EnterBoss);
