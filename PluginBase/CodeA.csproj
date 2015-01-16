@@ -95,6 +95,7 @@
       <DependentUpon>Panel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FileModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Panel.xaml">

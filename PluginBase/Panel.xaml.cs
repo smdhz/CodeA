@@ -29,11 +29,25 @@ namespace CodeA
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(Counter.Fright.ToString());
-            sb.AppendLine(Counter.RankS.ToString());
-            sb.AppendLine(Counter.EnterBoss.ToString());
-            txtNum.Text = sb.ToString();
+            Counter.ValueChanged += Set;
+            Set(sender, e);
+        }
+
+        private void Set(object sender, EventArgs e)
+        {
+            txtFirght.Text = string.Format("{0}/36", Counter.Fright);
+            txtWin.Text = string.Format("{0}/6", Counter.RankS);
+            txtBoss.Text = string.Format("{0}/24", Counter.EnterBoss);
+            txtBossWin.Text = string.Format("{0}/12", Counter.WinBoss);
+            pgsFirght.Value = Counter.Fright;
+            pgsWin.Value = Counter.RankS;
+            pgsBoss.Value = Counter.EnterBoss;
+            pgsBossWin.Value = Counter.WinBoss;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Counter.ValueChanged -= Set;
         }
     }
 }

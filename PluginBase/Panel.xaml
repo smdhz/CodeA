@@ -3,10 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Loaded="UserControl_Loaded"
+             mc:Ignorable="d" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <TextBlock Name="txtNum"/>
-
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="72"/>
+            <ColumnDefinition Width="52"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="出击"/>
+        <TextBlock Grid.Row="1" Text="S胜"/>
+        <TextBlock Grid.Row="2" Text="进BOSS"/>
+        <TextBlock Grid.Row="3" Text="BOSS战胜利"/>
+        <TextBlock Grid.Column="1" Name="txtFirght"/>
+        <TextBlock Grid.Column="1" Grid.Row="1" Name="txtWin"/>
+        <TextBlock Grid.Column="1" Grid.Row="2" Name="txtBoss"/>
+        <TextBlock Grid.Column="1" Grid.Row="3" Name="txtBossWin"/>
+        <ProgressBar Grid.Column="2" Name="pgsFirght" Maximum="36"/>
+        <ProgressBar Grid.Column="2" Grid.Row="1" Name="pgsWin" Maximum="6"/>
+        <ProgressBar Grid.Column="2" Grid.Row="2" Name="pgsBoss" Maximum="24"/>
+        <ProgressBar Grid.Column="2" Grid.Row="3" Name="pgsBossWin" Maximum="12"/>
     </Grid>
 </UserControl>
