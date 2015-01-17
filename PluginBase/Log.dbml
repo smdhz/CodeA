@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="Note" Class="LogDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=.;Initial Catalog=Note;Integrated Security=True" SettingsObjectName="CodeA.Properties.Settings" SettingsPropertyName="NoteConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.ShipLog" Member="ShipLog">
+    <Type Name="ShipLog">
+      <Column Name="Time" Type="System.DateTime" DbType="DateTime NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="Area" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Enemy" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Rank" Type="System.String" DbType="NChar(2) NOT NULL" CanBeNull="false" />
+      <Column Name="[Drop]" Member="Drop" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Fight" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>

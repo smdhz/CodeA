@@ -46,6 +46,7 @@ namespace CodeA
         }
 
         private bool OntheWay = false;
+        private Guid FightID = Guid.Empty;
         public int Fright { get; private set; }
         public int RankS { get; private set; }
         public int EnterBoss { get; private set; }
@@ -65,6 +66,7 @@ namespace CodeA
         {
             if (!OntheWay)
             {
+                FightID = Guid.NewGuid();
                 OntheWay = true;
                 Fright++;
             }
@@ -77,6 +79,22 @@ namespace CodeA
                     WinBoss++;
             }
             ValueChanged(this, new EventArgs());
+
+            using (LogDataContext db = new LogDataContext())
+            {
+                ShipLog log = new ShipLog()
+                {
+                    Time = DateTime.Now,
+                    Area = data.api_quest_name,
+                    Enemy = data.api_enemy_info.api_deck_name,
+                    Rank = data.api_win_rank,
+                    Fight = FightID
+                };
+                if (data.api_get_ship != null)
+                    log.Drop = data.api_get_ship.api_ship_name;
+                db.ShipLog.InsertOnSubmit(log);
+                db.SubmitChanges();
+            }
         }
 
         private void Port(kcsapi_port data)
