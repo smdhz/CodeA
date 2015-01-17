@@ -35,15 +35,17 @@ namespace CodeA
 
         private void Set(object sender, EventArgs e)
         {
-            MessageBox.Show("1");
-            txtFirght.Text = string.Format("{0}/36", Counter.Fright);
-            txtWin.Text = string.Format("{0}/6", Counter.RankS);
-            txtBoss.Text = string.Format("{0}/24", Counter.EnterBoss);
-            txtBossWin.Text = string.Format("{0}/12", Counter.WinBoss);
-            pgsFirght.Value = Counter.Fright;
-            pgsWin.Value = Counter.RankS;
-            pgsBoss.Value = Counter.EnterBoss;
-            pgsBossWin.Value = Counter.WinBoss;
+            Dispatcher.Invoke(() =>
+            {
+                txtFirght.Text = string.Format("{0}/36", Counter.Fright);
+                txtWin.Text = string.Format("{0}/6", Counter.RankS);
+                txtBoss.Text = string.Format("{0}/24", Counter.EnterBoss);
+                txtBossWin.Text = string.Format("{0}/12", Counter.WinBoss);
+                pgsFirght.Value = Counter.Fright;
+                pgsWin.Value = Counter.RankS;
+                pgsBoss.Value = Counter.EnterBoss;
+                pgsBossWin.Value = Counter.WinBoss;
+            });
         }
 
         private void UserControl_Unloaded(object sender, RoutedEventArgs e)

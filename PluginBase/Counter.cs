@@ -43,9 +43,6 @@ namespace CodeA
                     }
                 }
             }
-            else
-                using (FileStream fs = new FileStream(filePath, FileMode.CreateNew))
-                    serializer.Serialize(fs, new FileModel() { Date = DateTime.Today });
         }
 
         private bool OntheWay = false;
@@ -84,8 +81,9 @@ namespace CodeA
 
         private void Port(kcsapi_port data)
         {
+            if (!OntheWay)
+                return;
             OntheWay = false;
-            ValueChanged(this, new EventArgs());
             using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
                 serializer.Serialize(fs, new FileModel()
                 {
@@ -97,6 +95,6 @@ namespace CodeA
                 });
         }
 
-        public event EventHandler ValueChanged;
+        public event EventHandler ValueChanged = (se, ev) => { };
     }
 }
