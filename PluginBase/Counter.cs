@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models.Raw;
+using Grabacr07.KanColleWrapper.Models;
 
 namespace CodeA
 {
@@ -64,22 +65,33 @@ namespace CodeA
 
         private void Battle(kcsapi_battleresult data)
         {
-            if (!OntheWay)
-            {
-                FightID = Guid.NewGuid();
-                OntheWay = true;
-                Fright++;
-            }
-            if (data.api_win_rank == "S")
-                RankS++;
-            if (Bosses.Contains(data.api_enemy_info.api_deck_name))
-            {
-                EnterBoss++;
-                if (data.api_win_rank != "C" & data.api_win_rank != "D")
-                    WinBoss++;
-            }
-            ValueChanged(this, new EventArgs());
+            // 当前任务
+            List<Quest> quests = new List<Quest>();
+            foreach (Quest i in KanColleClient.Current.Homeport.Quests.Current)
+                if (i != null)
+                    quests.Add(i);
 
+            // 包含あ号
+            if ((from i in quests where i.Title == "あ号作戦" select i).HasItems())
+            {
+                if (!OntheWay)
+                {
+                    FightID = Guid.NewGuid();
+                    OntheWay = true;
+                    Fright++;
+                }
+                if (data.api_win_rank == "S")
+                    RankS++;
+                if (Bosses.Contains(data.api_enemy_info.api_deck_name))
+                {
+                    EnterBoss++;
+                    if (data.api_win_rank != "C" & data.api_win_rank != "D")
+                        WinBoss++;
+                }
+                ValueChanged(this, new EventArgs());
+            }
+
+            // 记录
             using (LogDataContext db = new LogDataContext())
             {
                 ShipLog log = new ShipLog()
