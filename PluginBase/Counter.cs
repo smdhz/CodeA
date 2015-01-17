@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models.Raw;
+using Grabacr07.KanColleWrapper.Models;
 
 namespace CodeA
 {
@@ -63,20 +64,30 @@ namespace CodeA
 
         private void Battle(kcsapi_battleresult data)
         {
-            if (!OntheWay)
+            // 当前任务
+            List<Quest> quests = new List<Quest>();
+            foreach (Quest i in KanColleClient.Current.Homeport.Quests.Current)
+                if (i != null)
+                    quests.Add(i);
+
+            // 包含あ号
+            //if ((from i in quests where i.Id == 22 select i).HasItems())
             {
-                OntheWay = true;
-                Fright++;
+                if (!OntheWay)
+                {
+                    OntheWay = true;
+                    Fright++;
+                }
+                if (data.api_win_rank == "S")
+                    RankS++;
+                if (Bosses.Contains(data.api_enemy_info.api_deck_name))
+                {
+                    EnterBoss++;
+                    if (data.api_win_rank != "C" & data.api_win_rank != "D")
+                        WinBoss++;
+                }
+                ValueChanged(this, new EventArgs());
             }
-            if (data.api_win_rank == "S")
-                RankS++;
-            if (Bosses.Contains(data.api_enemy_info.api_deck_name))
-            {
-                EnterBoss++;
-                if (data.api_win_rank != "C" & data.api_win_rank != "D")
-                    WinBoss++;
-            }
-            ValueChanged(this, new EventArgs());
         }
 
         private void Port(kcsapi_port data)
