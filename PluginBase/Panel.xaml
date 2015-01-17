@@ -12,23 +12,23 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="24"/>
-            <RowDefinition Height="24"/>
-            <RowDefinition Height="24"/>
-            <RowDefinition Height="24"/>
+            <RowDefinition Height="36"/>
+            <RowDefinition Height="36"/>
+            <RowDefinition Height="36"/>
+            <RowDefinition Height="36"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock Text="出击"/>
-        <TextBlock Grid.Row="1" Text="S胜"/>
-        <TextBlock Grid.Row="2" Text="进BOSS"/>
-        <TextBlock Grid.Row="3" Text="BOSS战胜利"/>
-        <TextBlock Grid.Column="1" Name="txtFirght"/>
-        <TextBlock Grid.Column="1" Grid.Row="1" Name="txtWin"/>
-        <TextBlock Grid.Column="1" Grid.Row="2" Name="txtBoss"/>
-        <TextBlock Grid.Column="1" Grid.Row="3" Name="txtBossWin"/>
-        <ProgressBar Grid.Column="2" Name="pgsFirght" Maximum="36"/>
-        <ProgressBar Grid.Column="2" Grid.Row="1" Name="pgsWin" Maximum="6"/>
-        <ProgressBar Grid.Column="2" Grid.Row="2" Name="pgsBoss" Maximum="24"/>
-        <ProgressBar Grid.Column="2" Grid.Row="3" Name="pgsBossWin" Maximum="12"/>
+        <TextBlock Text="出击" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="1" Text="S胜" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="2" Text="进BOSS" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="3" Text="BOSS战胜利" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Name="txtFirght" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Grid.Row="1" Name="txtWin" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Grid.Row="2" Name="txtBoss" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Grid.Row="3" Name="txtBossWin" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <ProgressBar Grid.Column="2" Name="pgsFirght" Maximum="36" Height="24"/>
+        <ProgressBar Grid.Column="2" Grid.Row="1" Name="pgsWin" Maximum="6" Height="24"/>
+        <ProgressBar Grid.Column="2" Grid.Row="2" Name="pgsBoss" Maximum="24" Height="24"/>
+        <ProgressBar Grid.Column="2" Grid.Row="3" Name="pgsBossWin" Maximum="12" Height="24"/>
     </Grid>
 </UserControl>
