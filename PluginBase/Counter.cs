@@ -71,7 +71,7 @@ namespace CodeA
                     quests.Add(i);
 
             // 包含あ号
-            //if ((from i in quests where i.Id == 22 select i).HasItems())
+            if ((from i in quests where i.Title == "あ号作戦" select i).HasItems())
             {
                 if (!OntheWay)
                 {
