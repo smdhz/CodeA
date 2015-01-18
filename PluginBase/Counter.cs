@@ -37,7 +37,7 @@ namespace CodeA
                     Offset--;
                     if (model.Date >= DateTime.Today.AddDays(-Offset))
                     {
-                        Fright = model.Fright;
+                        Fight = model.Fright;
                         RankS = model.RankS;
                         EnterBoss = model.EnterBoss;
                         WinBoss = model.WinBoss;
@@ -48,7 +48,7 @@ namespace CodeA
 
         private bool OntheWay = false;
         private Guid FightID = Guid.Empty;
-        public int Fright { get; private set; }
+        public int Fight { get; private set; }
         public int RankS { get; private set; }
         public int EnterBoss { get; private set; }
         public int WinBoss { get; private set; }
@@ -66,20 +66,22 @@ namespace CodeA
         private void Battle(kcsapi_battleresult data)
         {
             // 当前任务
-            List<Quest> quests = new List<Quest>();
+            List<string> quests = new List<string>();
             foreach (Quest i in KanColleClient.Current.Homeport.Quests.Current)
                 if (i != null)
-                    quests.Add(i);
+                    quests.Add(i.Title);
+
+            if (!OntheWay)
+            {
+                FightID = Guid.NewGuid();
+                OntheWay = true;
+                if(quests.Contains("あ号作戦"))
+                    Fight++;
+            }
 
             // 包含あ号
-            if ((from i in quests where i.Title == "あ号作戦" select i).HasItems())
+            if (quests.Contains("あ号作戦"))
             {
-                if (!OntheWay)
-                {
-                    FightID = Guid.NewGuid();
-                    OntheWay = true;
-                    Fright++;
-                }
                 if (data.api_win_rank == "S")
                     RankS++;
                 if (Bosses.Contains(data.api_enemy_info.api_deck_name))
@@ -118,7 +120,7 @@ namespace CodeA
                 serializer.Serialize(fs, new FileModel()
                 {
                     Date = DateTime.Now,
-                    Fright = this.Fright,
+                    Fright = this.Fight,
                     RankS = this.RankS,
                     EnterBoss = this.EnterBoss,
                     WinBoss = this.WinBoss
