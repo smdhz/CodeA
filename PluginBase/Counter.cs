@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models.Raw;
+using Grabacr07.KanColleWrapper.Models;
 
 namespace CodeA
 {
@@ -22,6 +23,7 @@ namespace CodeA
 
         public Counter(KanColleProxy proxy)
         {
+            // 注册订阅
             proxy.api_req_sortie_battleresult.TryParse<kcsapi_battleresult>().Subscribe(x => Battle(x.Data));
             proxy.api_port.TryParse<kcsapi_port>().Subscribe(x => Port(x.Data));
 
@@ -29,14 +31,17 @@ namespace CodeA
             {
                 using (FileStream fs = new FileStream(filePath, FileMode.Open))
                 {
+                    // 读文件
                     FileModel model = serializer.Deserialize(fs) as FileModel;
+                    // 取星期一
                     int Offset = Convert.ToInt32(DateTime.Today.DayOfWeek);
                     if (Offset == 0)
                         Offset = 7;
                     Offset--;
                     if (model.Date >= DateTime.Today.AddDays(-Offset))
                     {
-                        Fright = model.Fright;
+                        // 取值
+                        Fight = model.Fright;
                         RankS = model.RankS;
                         EnterBoss = model.EnterBoss;
                         WinBoss = model.WinBoss;
@@ -45,8 +50,8 @@ namespace CodeA
             }
         }
 
-        private bool OntheWay = false;
-        public int Fright { get; private set; }
+        private bool Changed = false;   // 写文件
+        public int Fight { get; private set; }
         public int RankS { get; private set; }
         public int EnterBoss { get; private set; }
         public int WinBoss { get; private set; }
@@ -63,16 +68,27 @@ namespace CodeA
 
         private void Battle(kcsapi_battleresult data)
         {
-            if (!OntheWay)
-            {
-                OntheWay = true;
-                Fright++;
-            }
+            // 当前任务
+            List<string> quests = new List<string>();
+            foreach (Quest i in KanColleClient.Current.Homeport.Quests.Current)
+                if (i != null)
+                    quests.Add(i.Title);
+
+            if (!quests.Contains("あ号作戦"))
+                return;
+
+            // 启动自增
+            Changed = true;
+            Fight++;    // 战斗数
+
+            // S
             if (data.api_win_rank == "S")
                 RankS++;
-            if (Bosses.Contains(data.api_enemy_info.api_deck_name))
+            // 进 BOSS
+            if (Bosses.Contains(data.api_enemy_info.api_deck_name))     
             {
                 EnterBoss++;
+                // BOSS 胜利
                 if (data.api_win_rank != "C" & data.api_win_rank != "D")
                     WinBoss++;
             }
@@ -81,18 +97,18 @@ namespace CodeA
 
         private void Port(kcsapi_port data)
         {
-            if (!OntheWay)
-                return;
-            OntheWay = false;
-            using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
-                serializer.Serialize(fs, new FileModel()
-                {
-                    Date = DateTime.Now,
-                    Fright = this.Fright,
-                    RankS = this.RankS,
-                    EnterBoss = this.EnterBoss,
-                    WinBoss = this.WinBoss
-                });
+            if (Changed)
+                // 保存
+                using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
+                    serializer.Serialize(fs, new FileModel()
+                    {
+                        Date = DateTime.Now,
+                        Fright = this.Fight,
+                        RankS = this.RankS,
+                        EnterBoss = this.EnterBoss,
+                        WinBoss = this.WinBoss
+                    });
+            Changed = false;
         }
 
         public event EventHandler ValueChanged = (se, ev) => { };
