@@ -37,11 +37,11 @@ namespace CodeA
         {
             Dispatcher.Invoke(() =>
             {
-                txtFirght.Text = string.Format("{0}/36", Counter.Fright);
+                txtFirght.Text = string.Format("{0}/36", Counter.Fight);
                 txtWin.Text = string.Format("{0}/6", Counter.RankS);
                 txtBoss.Text = string.Format("{0}/24", Counter.EnterBoss);
                 txtBossWin.Text = string.Format("{0}/12", Counter.WinBoss);
-                pgsFirght.Value = Counter.Fright;
+                pgsFirght.Value = Counter.Fight;
                 pgsWin.Value = Counter.RankS;
                 pgsBoss.Value = Counter.EnterBoss;
                 pgsBossWin.Value = Counter.WinBoss;
