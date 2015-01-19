@@ -37,7 +37,7 @@ namespace CodeA
                     Offset--;
                     if (model.Date >= DateTime.Today.AddDays(-Offset))
                     {
-                        Fight = model.Fright;
+                        Fight = model.Fight;
                         RankS = model.RankS;
                         EnterBoss = model.EnterBoss;
                         WinBoss = model.WinBoss;
@@ -47,6 +47,7 @@ namespace CodeA
         }
 
         private bool OntheWay = false;
+        private bool Changed = false;
         private Guid FightID = Guid.Empty;
         public int Fight { get; private set; }
         public int RankS { get; private set; }
@@ -74,14 +75,14 @@ namespace CodeA
             if (!OntheWay)
             {
                 FightID = Guid.NewGuid();
-                OntheWay = true;
-                if(quests.Contains("あ号作戦"))
-                    Fight++;
+                OntheWay = true;                    
             }
 
             // 包含あ号
             if (quests.Contains("あ号作戦"))
             {
+                Changed = true;
+                Fight++;
                 if (data.api_win_rank == "S")
                     RankS++;
                 if (Bosses.Contains(data.api_enemy_info.api_deck_name))
@@ -113,14 +114,15 @@ namespace CodeA
 
         private void Port(kcsapi_port data)
         {
-            if (!OntheWay)
-                return;
             OntheWay = false;
+            Changed = false;
+            if (!Changed)
+                return;
             using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
                 serializer.Serialize(fs, new FileModel()
                 {
                     Date = DateTime.Now,
-                    Fright = this.Fight,
+                    Fight = this.Fight,
                     RankS = this.RankS,
                     EnterBoss = this.EnterBoss,
                     WinBoss = this.WinBoss
