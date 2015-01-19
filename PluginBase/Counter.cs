@@ -67,10 +67,10 @@ namespace CodeA
         private void Battle(kcsapi_battleresult data)
         {
             // 当前任务
-            List<string> quests = new List<string>();
+            List<int> quests = new List<int>();
             foreach (Quest i in KanColleClient.Current.Homeport.Quests.Current)
                 if (i != null)
-                    quests.Add(i.Title);
+                    quests.Add(i.Id);
 
             if (!OntheWay)
             {
@@ -79,7 +79,7 @@ namespace CodeA
             }
 
             // 包含あ号
-            if (quests.Contains("あ号作戦"))
+            if (quests.Contains(214))
             {
                 Changed = true;
                 Fight++;
