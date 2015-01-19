@@ -115,7 +115,6 @@ namespace CodeA
         private void Port(kcsapi_port data)
         {
             OntheWay = false;
-            Changed = false;
             if (!Changed)
                 return;
             using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
@@ -127,6 +126,7 @@ namespace CodeA
                     EnterBoss = this.EnterBoss,
                     WinBoss = this.WinBoss
                 });
+            Changed = false;
         }
 
         public event EventHandler ValueChanged = (se, ev) => { };
