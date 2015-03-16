@@ -66,12 +66,6 @@ namespace CodeA
 
         private void Battle(kcsapi_battleresult data)
         {
-            // 当前任务
-            List<int> quests = new List<int>();
-            foreach (Quest i in KanColleClient.Current.Homeport.Quests.Current)
-                if (i != null)
-                    quests.Add(i.Id);
-
             if (!OntheWay)
             {
                 FightID = Guid.NewGuid();
@@ -79,7 +73,7 @@ namespace CodeA
             }
 
             // 包含あ号
-            if (quests.Contains(214))
+            if (KanColleClient.Current.Homeport.Quests.Current.Where(i => i != null).Select(i => i.Id).Contains(214))
             {
                 Changed = true;
                 Fight++;
