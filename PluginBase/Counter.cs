@@ -70,20 +70,20 @@ namespace CodeA
             // 包含あ号
             if (KanColleClient.Current.Homeport.Quests.Current.Where(i => i != null).Select(i => i.Id).Contains(214))
             {
-                Changed = true;
+            Changed = true;
                 Fight++;
-                if (data.api_win_rank == "S")
-                    RankS++;
-                // 进 BOSS
-                if (Bosses.Contains(data.api_enemy_info.api_deck_name))
-                {
-                    EnterBoss++;
-                    // BOSS 胜利
-                    if (data.api_win_rank != "C" & data.api_win_rank != "D")
-                        WinBoss++;
-                }
-                ValueChanged(this, new EventArgs());
+            if (data.api_win_rank == "S")
+                RankS++;
+            // 进 BOSS
+            if (Bosses.Contains(data.api_enemy_info.api_deck_name))     
+            {
+                EnterBoss++;
+                // BOSS 胜利
+                if (data.api_win_rank != "C" & data.api_win_rank != "D")
+                    WinBoss++;
             }
+            ValueChanged(this, new EventArgs());
+        }
         }
 
         private void Port(kcsapi_port data)
@@ -91,14 +91,14 @@ namespace CodeA
             if (!Changed)
                 return;
             using (FileStream fs = new FileStream(filePath, FileMode.Create))
-                serializer.Serialize(fs, new FileModel()
-                {
-                    Date = DateTime.Now,
+                    serializer.Serialize(fs, new FileModel()
+                    {
+                        Date = DateTime.Now,
                     Fight = this.Fight,
-                    RankS = this.RankS,
-                    EnterBoss = this.EnterBoss,
-                    WinBoss = this.WinBoss
-                });
+                        RankS = this.RankS,
+                        EnterBoss = this.EnterBoss,
+                        WinBoss = this.WinBoss
+                    });
             Changed = false;
         }
 
