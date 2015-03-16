@@ -117,7 +117,7 @@ namespace CodeA
             OntheWay = false;
             if (!Changed)
                 return;
-            using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
                 serializer.Serialize(fs, new FileModel()
                 {
                     Date = DateTime.Now,
