@@ -40,8 +40,7 @@ namespace CodeA
                     Offset--;
                     if (model.Date >= DateTime.Today.AddDays(-Offset))
                     {
-                        // 取值
-                        Fight = model.Fright;
+                        Fight = model.Fight;
                         RankS = model.RankS;
                         EnterBoss = model.EnterBoss;
                         WinBoss = model.WinBoss;
@@ -68,24 +67,21 @@ namespace CodeA
 
         private void Battle(kcsapi_battleresult data)
         {
-            // 当前任务
-            List<string> quests = new List<string>();
-            foreach (Quest i in KanColleClient.Current.Homeport.Quests.Current)
-                if (i != null)
-                    quests.Add(i.Title);
+            if (!OntheWay)
+            {
+                FightID = Guid.NewGuid();
+                OntheWay = true;                    
+            }
 
-            if (!quests.Contains("あ号作戦"))
-                return;
-
-            // 启动自增
-            Changed = true;
-            Fight++;    // 战斗数
-
-            // S
+            // 包含あ号
+            if (KanColleClient.Current.Homeport.Quests.Current.Where(i => i != null).Select(i => i.Id).Contains(214))
+            {
+                Changed = true;
+                Fight++;
             if (data.api_win_rank == "S")
                 RankS++;
             // 进 BOSS
-            if (Bosses.Contains(data.api_enemy_info.api_deck_name))     
+            if (Bosses.Contains(data.api_enemy_info.api_deck_name))
             {
                 EnterBoss++;
                 // BOSS 胜利
@@ -97,17 +93,18 @@ namespace CodeA
 
         private void Port(kcsapi_port data)
         {
-            if (Changed)
-                // 保存
-                using (FileStream fs = new FileStream(filePath, FileMode.Truncate))
-                    serializer.Serialize(fs, new FileModel()
-                    {
-                        Date = DateTime.Now,
-                        Fright = this.Fight,
-                        RankS = this.RankS,
-                        EnterBoss = this.EnterBoss,
-                        WinBoss = this.WinBoss
-                    });
+            OntheWay = false;
+            if (!Changed)
+                return;
+            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                serializer.Serialize(fs, new FileModel()
+                {
+                    Date = DateTime.Now,
+                    Fight = this.Fight,
+                    RankS = this.RankS,
+                    EnterBoss = this.EnterBoss,
+                    WinBoss = this.WinBoss
+                });
             Changed = false;
         }
 
