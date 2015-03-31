@@ -11,12 +11,12 @@ namespace CodeA
 {
     [Export(typeof(IToolPlugin))]
     [ExportMetadata("Title", "CodeA")]
-    [ExportMetadata("Description", "")]
-    [ExportMetadata("Version", "1.0")]
+    [ExportMetadata("Description", "周常计数器")]
+    [ExportMetadata("Version", "2.0")]
     [ExportMetadata("Author", "Mystic Monkey")]
     public class Base : IToolPlugin
     {
-        private readonly Counter counter = new Counter(Grabacr07.KanColleWrapper.KanColleClient.Current.Proxy);
+        private Counter counter = new Counter(Grabacr07.KanColleWrapper.KanColleClient.Current.Proxy);
 
         public string ToolName
         {
