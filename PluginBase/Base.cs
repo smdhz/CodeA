@@ -25,7 +25,7 @@ namespace CodeA
 
         public object GetToolView()
         {
-            return new Panel() { Counter = counter };
+            return new Panel() { DataContext = counter };
         }
 
         public object GetSettingsView()

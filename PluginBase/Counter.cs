@@ -9,10 +9,11 @@ using System.Xml.Serialization;
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models.Raw;
 using Grabacr07.KanColleWrapper.Models;
+using System.ComponentModel;
 
 namespace CodeA
 {
-    public class Counter
+    public class Counter : INotifyPropertyChanged
     {
         private static readonly string filePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -38,24 +39,37 @@ namespace CodeA
                     if (Offset == 0)
                         Offset = 7;
                     Offset--;
+                    // 比对日期
                     if (model.Date >= DateTime.Today.AddDays(-Offset))
                     {
                         Fight = model.Fight;
                         RankS = model.RankS;
                         EnterBoss = model.EnterBoss;
                         WinBoss = model.WinBoss;
+
+                        Support20 = model.Support20;
+                        Ro = model.Ro;
+                        I = model.I;
                     }
                 }
             }
         }
 
         private bool Changed = false;   // 写文件
+
+        // あ
         public int Fight { get; private set; }
         public int RankS { get; private set; }
         public int EnterBoss { get; private set; }
         public int WinBoss { get; private set; }
 
-        private string[] Bosses = 
+        // 其它
+        public int Support20 { get; set; }
+        public int Ro { get; set; }
+        public int I { get; set; }
+
+        // 常量表
+        private readonly string[] Bosses = 
         { 
             "敵主力艦隊", "敵主力部隊", "敵機動部隊", "敵通商破壊主力艦隊",
             "敵通商破壊艦隊", "敵主力打撃群", "敵侵攻中核艦隊",
@@ -65,10 +79,16 @@ namespace CodeA
             "敵回航中空母", "敵攻略部隊本体"
         };
 
+        private readonly int[] Supports = new int[] { 513, 558 };
+        private readonly int[] Carriers = new int[] { 510, 523 };
+
         private void Battle(kcsapi_battleresult data)
         {
-            // 包含あ号
-            if (KanColleClient.Current.Homeport.Quests.Current.Where(i => i != null).Select(i => i.Id).Contains(214))
+            int[] misson =
+                KanColleClient.Current.Homeport.Quests.Current.Where(i => i != null).Select(i => i.Id).ToArray();
+
+            // あ号
+            if (misson.Contains(214))
             {
                 Changed = true;
                 Fight++;
@@ -82,26 +102,61 @@ namespace CodeA
                     if (data.api_win_rank != "C" & data.api_win_rank != "D")
                         WinBoss++;
                 }
-                ValueChanged(this, new EventArgs());
+                SetEvent("Fight", "RankS", "EnterBoss", "WinBoss");
+            }
+
+            // 20补给
+            if (misson.Contains(213) & data.api_ship_id.Where(i => Supports.Contains(i)).Count() > 0)
+            {
+                Changed = true;
+                Support20++;
+                SetEvent("Support20");
+            }
+
+            // ろ号
+            if (misson.Contains(-213) & data.api_ship_id.Where(i => Supports.Contains(i)).Count() > 0)
+            {
+                Changed = true;
+                Ro++;
+                SetEvent("Ro");
+            }
+
+            // い号
+            if (misson.Contains(220) & data.api_ship_id.Where(i => Carriers.Contains(i)).Count() > 0)
+            {
+                Changed = true;
+                I++;
+                SetEvent("I");
             }
         }
 
         private void Port(kcsapi_port data)
         {
-            if (!Changed)
-                return;
-            using (FileStream fs = new FileStream(filePath, FileMode.Create))
+            if (Changed)
+            {
+                Changed = false;
+                using (FileStream fs = new FileStream(filePath, FileMode.Create))
                     serializer.Serialize(fs, new FileModel()
                     {
                         Date = DateTime.Now,
-                    Fight = this.Fight,
+                        Fight = this.Fight,
                         RankS = this.RankS,
                         EnterBoss = this.EnterBoss,
                         WinBoss = this.WinBoss
                     });
-            Changed = false;
+            }
         }
 
-        public event EventHandler ValueChanged = (se, ev) => { };
+        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// 触发 PropertyChanged 事件
+        /// </summary>
+        /// <param name="property">发生改变的属性（一个或多个）</param>
+        private void SetEvent(params string[] property)
+        {
+            if (PropertyChanged != null)
+                foreach (string i in property)
+                    PropertyChanged(this, new PropertyChangedEventArgs(i));
+        }
     }
 }

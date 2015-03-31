@@ -20,37 +20,9 @@ namespace CodeA
     /// </summary>
     public partial class Panel : UserControl
     {
-        public Counter Counter { get; set; }
-
         public Panel()
         {
             InitializeComponent();
-        }
-
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            Counter.ValueChanged += Set;
-            Set(sender, e);
-        }
-
-        private void Set(object sender, EventArgs e)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                txtFirght.Text = string.Format("{0}/36", Counter.Fight);
-                txtWin.Text = string.Format("{0}/6", Counter.RankS);
-                txtBoss.Text = string.Format("{0}/24", Counter.EnterBoss);
-                txtBossWin.Text = string.Format("{0}/12", Counter.WinBoss);
-                pgsFirght.Value = Counter.Fight;
-                pgsWin.Value = Counter.RankS;
-                pgsBoss.Value = Counter.EnterBoss;
-                pgsBossWin.Value = Counter.WinBoss;
-            });
-        }
-
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            Counter.ValueChanged -= Set;
         }
     }
 }
