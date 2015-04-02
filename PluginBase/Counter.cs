@@ -80,7 +80,7 @@ namespace CodeA
         };
 
         private readonly int[] Supports = new int[] { 513, 558 };
-        private readonly int[] Carriers = new int[] { 510, 523 };
+        private readonly int[] Carriers = new int[] { 510, 523, 525, 528 };
 
         private void Battle(kcsapi_battleresult data)
         {
@@ -114,7 +114,7 @@ namespace CodeA
             }
 
             // ろ号
-            if (misson.Contains(-213) & data.api_ship_id.Where(i => Supports.Contains(i)).Count() > 0)
+            if (misson.Contains(221) & data.api_ship_id.Where(i => Supports.Contains(i)).Count() > 0)
             {
                 Changed = true;
                 Ro++;
