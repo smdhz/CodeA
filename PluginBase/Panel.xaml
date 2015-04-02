@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded" d:DesignWidth="300" Height="272">
+             mc:Ignorable="d" d:DesignWidth="300" Height="272">
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80"/>
@@ -22,6 +22,7 @@
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock Text="あ号作戦" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
         <Rectangle Height="2" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="3">

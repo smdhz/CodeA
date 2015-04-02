@@ -80,7 +80,7 @@ namespace CodeA
         };
 
         private readonly int[] Supports = new int[] { 513, 558 };
-        private readonly int[] Carriers = new int[] { 510, 523, 525, 528 };
+        private readonly int[] Carriers = new int[] { 510, 523, 512, 525, 528 };
 
         private void Battle(kcsapi_battleresult data)
         {
@@ -105,27 +105,30 @@ namespace CodeA
                 SetEvent("Fight", "RankS", "EnterBoss", "WinBoss");
             }
 
+            int acCount = data.api_ship_id.Where(i => Supports.Contains(i)).Count(),
+                cvCount = data.api_ship_id.Where(i => Carriers.Contains(i)).Count();
+
             // 20补给
-            if (misson.Contains(213) & data.api_ship_id.Where(i => Supports.Contains(i)).Count() > 0)
+            if (misson.Contains(213) & acCount > 0)
             {
                 Changed = true;
-                Support20++;
+                Support20 += acCount;
                 SetEvent("Support20");
             }
 
             // ろ号
-            if (misson.Contains(221) & data.api_ship_id.Where(i => Supports.Contains(i)).Count() > 0)
+            if (misson.Contains(221) & acCount > 0)
             {
                 Changed = true;
-                Ro++;
+                Ro += acCount;
                 SetEvent("Ro");
             }
 
             // い号
-            if (misson.Contains(220) & data.api_ship_id.Where(i => Carriers.Contains(i)).Count() > 0)
+            if (misson.Contains(220) & cvCount > 0)
             {
                 Changed = true;
-                I++;
+                I += cvCount;
                 SetEvent("I");
             }
         }
@@ -139,10 +142,15 @@ namespace CodeA
                     serializer.Serialize(fs, new FileModel()
                     {
                         Date = DateTime.Now,
+
                         Fight = this.Fight,
                         RankS = this.RankS,
                         EnterBoss = this.EnterBoss,
-                        WinBoss = this.WinBoss
+                        WinBoss = this.WinBoss,
+
+                        Support20 = this.Support20,
+                        Ro = this.Ro,
+                        I = this.I
                     });
             }
         }
