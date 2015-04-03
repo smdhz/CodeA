@@ -28,30 +28,36 @@ namespace CodeA
             proxy.api_req_sortie_battleresult.TryParse<kcsapi_battleresult>().Subscribe(x => Battle(x.Data));
             proxy.api_port.TryParse<kcsapi_port>().Subscribe(x => Port(x.Data));
 
-            if (new FileInfo(filePath).Exists)
+            FileInfo file = new FileInfo(filePath);
+            if (file.Exists)
             {
-                using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                try
                 {
-                    // 读文件
-                    FileModel model = serializer.Deserialize(fs) as FileModel;
-                    // 取星期一
-                    int Offset = Convert.ToInt32(DateTime.Today.DayOfWeek);
-                    if (Offset == 0)
-                        Offset = 7;
-                    Offset--;
-                    // 比对日期
-                    if (model.Date >= DateTime.Today.AddDays(-Offset))
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open))
                     {
-                        Fight = model.Fight;
-                        RankS = model.RankS;
-                        EnterBoss = model.EnterBoss;
-                        WinBoss = model.WinBoss;
+                        // 读文件
+                        FileModel model = serializer.Deserialize(fs) as FileModel;
+                        // 取星期一
+                        int Offset = Convert.ToInt32(DateTime.Today.DayOfWeek);
+                        if (Offset == 0)
+                            Offset = 7;
+                        Offset--;
+                        // 比对日期
+                        if (model.Date >= DateTime.Today.AddDays(-Offset))
+                        {
+                            Fight = model.Fight;
+                            RankS = model.RankS;
+                            EnterBoss = model.EnterBoss;
+                            WinBoss = model.WinBoss;
 
-                        Support20 = model.Support20;
-                        Ro = model.Ro;
-                        I = model.I;
+                            Support20 = model.Support20;
+                            Ro = model.Ro;
+                            I = model.I;
+                        }
                     }
                 }
+                catch (InvalidOperationException)
+                { file.Delete(); }
             }
         }
 

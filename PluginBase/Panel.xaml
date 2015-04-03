@@ -12,75 +12,53 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>
-            <RowDefinition Height="7"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
-            <RowDefinition Height="7"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock Text="あ号作戦" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-        <Rectangle Height="2" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="3">
-            <Rectangle.Fill>
-                <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                    <GradientStop Color="Transparent" Offset="0"/>
-                    <GradientStop Color="Gold" Offset="0.3"/>
-                    <GradientStop Color="Gold" Offset="0.7"/>
-                    <GradientStop Color="Transparent" Offset="1"/>
-                </LinearGradientBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-        <TextBlock Text="战斗" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"/>
-        <TextBlock Grid.Row="3" Text="S胜" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <TextBlock Grid.Row="4" Text="进BOSS" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <TextBlock Grid.Row="5" Text="BOSS战胜利" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <TextBlock Text="あ号作戦" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontWeight="Bold" FontSize="14"/>
+        <TextBlock Text="战斗" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1"/>
+        <TextBlock Grid.Row="2" Text="S胜" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="3" Text="进BOSS" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="4" Text="BOSS战胜利" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center">
             <Run Text="{Binding Fight, Mode=OneWay}"/>/36
         </TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <TextBlock Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center">
             <Run Text="{Binding RankS, Mode=OneWay}"/>/6
         </TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <TextBlock Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center">
             <Run Text="{Binding EnterBoss, Mode=OneWay}"/>/24
         </TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <TextBlock Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center">
             <Run Text="{Binding WinBoss, Mode=OneWay}"/>/12
         </TextBlock>
-        <ProgressBar Grid.Column="2" Grid.Row="2" Value="{Binding Fight}" Maximum="36" Height="18"/>
-        <ProgressBar Grid.Column="2" Grid.Row="3" Value="{Binding RankS}" Maximum="6" Height="18"/>
-        <ProgressBar Grid.Column="2" Grid.Row="4" Value="{Binding EnterBoss}" Maximum="24" Height="18"/>
-        <ProgressBar Grid.Column="2" Grid.Row="5" Value="{Binding WinBoss}" Maximum="12" Height="18"/>
+        <ProgressBar Grid.Column="2" Grid.Row="1" Value="{Binding Fight}" Maximum="36" Height="18"/>
+        <ProgressBar Grid.Column="2" Grid.Row="2" Value="{Binding RankS}" Maximum="6" Height="18"/>
+        <ProgressBar Grid.Column="2" Grid.Row="3" Value="{Binding EnterBoss}" Maximum="24" Height="18"/>
+        <ProgressBar Grid.Column="2" Grid.Row="4" Value="{Binding WinBoss}" Maximum="12" Height="18"/>
 
-        <TextBlock Text="其它" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="6"/>
-        <Rectangle Height="2" Grid.Row="7" VerticalAlignment="Bottom" Grid.ColumnSpan="3">
-            <Rectangle.Fill>
-                <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                    <GradientStop Color="Transparent" Offset="0"/>
-                    <GradientStop Color="LimeGreen" Offset="0.3"/>
-                    <GradientStop Color="LimeGreen" Offset="0.7"/>
-                    <GradientStop Color="Transparent" Offset="1"/>
-                </LinearGradientBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-        <TextBlock Grid.Row="8" Text="海上通商破壊" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <TextBlock Grid.Row="9" Text="ろ号作戦" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <TextBlock Grid.Row="10" Text="い号作戦" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <TextBlock Grid.Column="1" Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <TextBlock Text="其它" HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.Row="5" FontWeight="Bold" FontSize="14"/>
+        <TextBlock Grid.Row="6" Text="海上通商破壊" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="7" Text="ろ号作戦" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="8" Text="い号作戦" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center">
             <Run Text="{Binding Support20, Mode=OneWay}"/>/20
         </TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <TextBlock Grid.Column="1" Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Center">
             <Run Text="{Binding Ro, Mode=OneWay}"/>/50
         </TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="10" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <TextBlock Grid.Column="1" Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Center">
             <Run Text="{Binding I, Mode=OneWay}"/>/20
         </TextBlock>
-        <ProgressBar Grid.Column="2" Grid.Row="8" Value="{Binding Support20}" Maximum="20" Height="18"/>
-        <ProgressBar Grid.Column="2" Grid.Row="9" Value="{Binding Ro}" Maximum="50" Height="18"/>
-        <ProgressBar Grid.Column="2" Grid.Row="10" Value="{Binding I}" Maximum="20" Height="18"/>
+        <ProgressBar Grid.Column="2" Grid.Row="6" Value="{Binding Support20}" Maximum="20" Height="18"/>
+        <ProgressBar Grid.Column="2" Grid.Row="7" Value="{Binding Ro}" Maximum="50" Height="18"/>
+        <ProgressBar Grid.Column="2" Grid.Row="8" Value="{Binding I}" Maximum="20" Height="18"/>
     </Grid>
 </UserControl>
