@@ -85,8 +85,8 @@ namespace CodeA
             "敵回航中空母", "敵攻略部隊本体"
         };
 
-        private readonly int[] Supports = new int[] { 513, 526, 558 };
-        private readonly int[] Carriers = new int[] { 510, 523, 512, 525, 528 };
+        private readonly int[] Supports = new int[] { 513, 526, 558 };                  // ワ
+        private readonly int[] Carriers = new int[] { 510, 523, 560, 512, 525, 528 };   // ヌ、ヲ
 
         private void Battle(kcsapi_battleresult data)
         {
