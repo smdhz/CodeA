@@ -13,22 +13,19 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="24"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="24"/>
+            <RowDefinition Height="28"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock Text="あ号作戦" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontWeight="Bold" FontSize="14"/>
-        <Expander Grid.Row="1" Grid.ColumnSpan="3">
-            <Expander.Header>
-                <DockPanel Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, Path=ActualWidth}">
-                    <TextBlock VerticalAlignment="Center" Margin="10,0">
-                        <Run Text="{Binding EnterBoss, Mode=OneWay}"/>/24
-                    </TextBlock>
-                    <ProgressBar Value="{Binding EnterBoss}" Maximum="24" Height="18" Margin="27,0"/>
-                </DockPanel>
-            </Expander.Header>
+        <TextBlock Text="あ号作戦" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" FontSize="14"/>
+        <TextBlock VerticalAlignment="Center" Grid.Column="1">
+            <Run Text="{Binding EnterBoss, Mode=OneWay}"/>/24
+        </TextBlock>
+        <ProgressBar Value="{Binding EnterBoss}" Maximum="24" Height="18" Grid.Column="2"/>
+        <Expander Grid.Row="1" Grid.ColumnSpan="3" Header="详细信息">
+            
             <Grid Margin="30,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="80"/>

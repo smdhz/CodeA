@@ -44,7 +44,7 @@ namespace CodeA
                             Offset = 7;
                         Offset--;
                         // 比对日期
-                        if (model.Date >= jpTime.Date.AddDays(-Offset))
+                        if (TimeZoneInfo.ConvertTimeBySystemTimeZoneId(model.Date, "Tokyo Standard Time") >= jpTime.Date.AddDays(-Offset))
                         {
                             Fight = model.Fight;
                             RankS = model.RankS;
@@ -184,7 +184,7 @@ namespace CodeA
                     StringBuilder sb = new StringBuilder();
                     if (System.Windows.MessageBox.Show(
                         "此操作不可撤销",
-                        TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time").ToString(),
+                        "东京标准时间：" + TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time").ToString(),
                         System.Windows.MessageBoxButton.OKCancel,
                         System.Windows.MessageBoxImage.Warning)
                         == System.Windows.MessageBoxResult.OK)
