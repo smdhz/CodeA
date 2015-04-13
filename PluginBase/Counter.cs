@@ -37,13 +37,14 @@ namespace CodeA
                     {
                         // 读文件
                         FileModel model = serializer.Deserialize(fs) as FileModel;
+                        DateTime jpTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time");
                         // 取星期一
-                        int Offset = Convert.ToInt32(DateTime.Today.DayOfWeek);
+                        int Offset = Convert.ToInt32(jpTime.DayOfWeek);
                         if (Offset == 0)
                             Offset = 7;
                         Offset--;
                         // 比对日期
-                        if (model.Date >= DateTime.Today.AddDays(-Offset))
+                        if (model.Date >= jpTime.Date.AddDays(-Offset))
                         {
                             Fight = model.Fight;
                             RankS = model.RankS;
@@ -171,6 +172,30 @@ namespace CodeA
             if (PropertyChanged != null)
                 foreach (string i in property)
                     PropertyChanged(this, new PropertyChangedEventArgs(i));
+        }
+
+        private Livet.Commands.ViewModelCommand _clear;
+        public Livet.Commands.ViewModelCommand ClearCommand 
+        {
+            get
+            {
+                return _clear ?? (_clear = new Livet.Commands.ViewModelCommand(() =>
+                {
+                    StringBuilder sb = new StringBuilder();
+                    if (System.Windows.MessageBox.Show(
+                        "此操作不可撤销",
+                        TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time").ToString(),
+                        System.Windows.MessageBoxButton.OKCancel,
+                        System.Windows.MessageBoxImage.Warning)
+                        == System.Windows.MessageBoxResult.OK)
+                    {
+                        FileInfo file = new FileInfo(filePath);
+                        if (file.Exists)
+                            file.Delete();
+                        Fight = RankS = EnterBoss = WinBoss = Support20 = Ro = I = 0;
+                    }
+                }));
+            }
         }
     }
 }
