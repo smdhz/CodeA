@@ -42,7 +42,7 @@ namespace CodeA
                         FileModel model = serializer.Deserialize(fs) as FileModel;
                         
                         // 比对日期
-                        if (TimeZoneInfo.ConvertTimeBySystemTimeZoneId(model.Date, "Tokyo Standard Time") >= GetResetTime())
+                        if (model.Date >= GetResetTime())
                         {
                             Fight = model.Fight;
                             RankS = model.RankS;
@@ -150,7 +150,7 @@ namespace CodeA
         {
             DateTime jpNow = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time");
             // 处理不关机爱好者
-            if (DateTime.Compare(LastPort, GetResetTime()) < 0 & DateTime.Compare(GetResetTime(), jpNow) < 0)
+            if (LastPort < GetResetTime() & GetResetTime() < jpNow)
             {
                 FileInfo file = new FileInfo(filePath);
                 if (file.Exists)
@@ -165,7 +165,7 @@ namespace CodeA
                 using (FileStream fs = new FileStream(filePath, FileMode.Create))
                     serializer.Serialize(fs, new FileModel()
                     {
-                        Date = DateTime.Now,
+                        Date = jpNow,
 
                         Fight = this.Fight,
                         RankS = this.RankS,
