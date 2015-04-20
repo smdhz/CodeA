@@ -22,6 +22,9 @@ namespace CodeA
             "CodeA.xml");
         private XmlSerializer serializer = new XmlSerializer(typeof(FileModel));
 
+        // 最后一次回母港
+        private DateTime LastPort = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time");
+
         public Counter(KanColleProxy proxy)
         {
             // 注册订阅
@@ -37,14 +40,9 @@ namespace CodeA
                     {
                         // 读文件
                         FileModel model = serializer.Deserialize(fs) as FileModel;
-                        DateTime jpTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time");
-                        // 取星期一
-                        int Offset = Convert.ToInt32(jpTime.DayOfWeek);
-                        if (Offset == 0)
-                            Offset = 7;
-                        Offset--;
+                        
                         // 比对日期
-                        if (TimeZoneInfo.ConvertTimeBySystemTimeZoneId(model.Date, "Tokyo Standard Time") >= jpTime.Date.AddDays(-Offset))
+                        if (TimeZoneInfo.ConvertTimeBySystemTimeZoneId(model.Date, "Tokyo Standard Time") >= GetResetTime())
                         {
                             Fight = model.Fight;
                             RankS = model.RankS;
@@ -89,6 +87,10 @@ namespace CodeA
         private readonly int[] Supports = new int[] { 513, 526, 558 };                  // ワ
         private readonly int[] Carriers = new int[] { 510, 523, 560, 512, 525, 528 };   // ヌ、ヲ
 
+        /// <summary>
+        /// 战斗时调整计数器
+        /// </summary>
+        /// <param name="data">战斗结果 (battleresult)</param>
         private void Battle(kcsapi_battleresult data)
         {
             int[] misson =
@@ -140,8 +142,23 @@ namespace CodeA
             }
         }
 
+        /// <summary>
+        /// 回母港时记录信息
+        /// </summary>
+        /// <param name="data">母港信息 (port)</param>
         private void Port(kcsapi_port data)
         {
+            DateTime jpNow = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time");
+            // 处理不关机爱好者
+            if (DateTime.Compare(LastPort, GetResetTime()) < 0 & DateTime.Compare(GetResetTime(), jpNow) < 0)
+            {
+                FileInfo file = new FileInfo(filePath);
+                if (file.Exists)
+                    file.Delete();
+                Fight = RankS = EnterBoss = WinBoss = Support20 = Ro = I = 0;
+            }
+
+            // 写文件
             if (Changed)
             {
                 Changed = false;
@@ -160,6 +177,24 @@ namespace CodeA
                         I = this.I
                     });
             }
+            LastPort = jpNow;
+        }
+
+        /// <summary>
+        /// 取重置计数的时间点
+        /// </summary>
+        /// <returns>周一5时 (UTC+9)</returns>
+        private DateTime GetResetTime()
+        {
+            DateTime now = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time");
+
+            // 取星期一
+            int Offset = Convert.ToInt32(now.DayOfWeek);
+            if (Offset == 0)
+                Offset = 7;
+            Offset--;
+
+            return now.Date.AddDays(-Offset).AddHours(5);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -172,30 +207,6 @@ namespace CodeA
             if (PropertyChanged != null)
                 foreach (string i in property)
                     PropertyChanged(this, new PropertyChangedEventArgs(i));
-        }
-
-        private Livet.Commands.ViewModelCommand _clear;
-        public Livet.Commands.ViewModelCommand ClearCommand 
-        {
-            get
-            {
-                return _clear ?? (_clear = new Livet.Commands.ViewModelCommand(() =>
-                {
-                    StringBuilder sb = new StringBuilder();
-                    if (System.Windows.MessageBox.Show(
-                        "此操作不可撤销",
-                        "东京标准时间：" + TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time").ToString(),
-                        System.Windows.MessageBoxButton.OKCancel,
-                        System.Windows.MessageBoxImage.Warning)
-                        == System.Windows.MessageBoxResult.OK)
-                    {
-                        FileInfo file = new FileInfo(filePath);
-                        if (file.Exists)
-                            file.Delete();
-                        Fight = RankS = EnterBoss = WinBoss = Support20 = Ro = I = 0;
-                    }
-                }));
-            }
         }
     }
 }
