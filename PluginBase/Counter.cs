@@ -156,6 +156,7 @@ namespace CodeA
                 if (file.Exists)
                     file.Delete();
                 Fight = RankS = EnterBoss = WinBoss = Support20 = Ro = I = 0;
+                SetEvent("Fight", "RankS", "EnterBoss", "WinBoss", "Support20", "Ro", "I");
             }
 
             // 写文件
