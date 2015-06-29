@@ -21,6 +21,7 @@ namespace CodeA
             "KanColleViewer",
             "CodeA.xml");
         private XmlSerializer serializer = new XmlSerializer(typeof(FileModel));
+        private FileInfo dataFile;
 
         // 最后一次回母港
         private DateTime LastPort = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time");
@@ -31,12 +32,12 @@ namespace CodeA
             proxy.api_req_sortie_battleresult.TryParse<kcsapi_battleresult>().Subscribe(x => Battle(x.Data));
             proxy.api_port.TryParse<kcsapi_port>().Subscribe(x => Port(x.Data));
 
-            FileInfo file = new FileInfo(filePath);
-            if (file.Exists)
+            dataFile = checkFile();
+            if (dataFile.Exists)
             {
                 try
                 {
-                    using (FileStream fs = new FileStream(filePath, FileMode.Open))
+                    using (FileStream fs = new FileStream(dataFile.FullName, FileMode.Open))
                     {
                         // 读文件
                         FileModel model = serializer.Deserialize(fs) as FileModel;
@@ -56,7 +57,7 @@ namespace CodeA
                     }
                 }
                 catch (InvalidOperationException)
-                { file.Delete(); }
+                { dataFile.Delete(); }
             }
         }
 
@@ -152,9 +153,8 @@ namespace CodeA
             // 处理不关机爱好者
             if (LastPort < GetResetTime() & GetResetTime() < jpNow)
             {
-                FileInfo file = new FileInfo(filePath);
-                if (file.Exists)
-                    file.Delete();
+                if (dataFile.Exists)
+                    dataFile.Delete();
                 Fight = RankS = EnterBoss = WinBoss = Support20 = Ro = I = 0;
                 SetEvent("Fight", "RankS", "EnterBoss", "WinBoss", "Support20", "Ro", "I");
             }
@@ -163,7 +163,7 @@ namespace CodeA
             if (Changed)
             {
                 Changed = false;
-                using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                using (FileStream fs = new FileStream(dataFile.FullName, FileMode.Create))
                     serializer.Serialize(fs, new FileModel()
                     {
                         Date = jpNow,
@@ -196,6 +196,26 @@ namespace CodeA
             Offset--;
 
             return now.Date.AddDays(-Offset).AddHours(5);
+        }
+
+        /// <summary>
+        /// 获取合适的记录文件（OneDrive / 本地）
+        /// </summary>
+        /// <returns>合适的文件</returns>
+        private FileInfo checkFile()
+        {
+            // 尝试 Win7 OneDrive
+            string oneDrive = Convert.ToString(Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\OneDrive", "UserFolder", null));
+            // Win8 OneDrive
+            if (string.IsNullOrEmpty(oneDrive))
+                oneDrive = Convert.ToString(Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\SkyDrive", "UserFolder", null));
+            // 使用本地
+            if (string.IsNullOrEmpty(oneDrive))
+                return new FileInfo(filePath);
+            else
+                oneDrive += "\\Application Data\\CodeA.xml";
+
+            return new FileInfo(oneDrive);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
