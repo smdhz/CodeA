@@ -32,7 +32,8 @@ namespace CodeA
             proxy.api_req_sortie_battleresult.TryParse<kcsapi_battleresult>().Subscribe(x => Battle(x.Data));
             proxy.api_port.TryParse<kcsapi_port>().Subscribe(x => Port(x.Data));
 
-            dataFile = checkFile();
+            // 检查文件
+            dataFile = CheckFile();
             if (dataFile.Exists)
             {
                 try
@@ -202,7 +203,7 @@ namespace CodeA
         /// 获取合适的记录文件（OneDrive / 本地）
         /// </summary>
         /// <returns>合适的文件</returns>
-        private FileInfo checkFile()
+        private FileInfo CheckFile()
         {
             // 尝试 Win7 OneDrive
             string oneDrive = Convert.ToString(Microsoft.Win32.Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\OneDrive", "UserFolder", null));
