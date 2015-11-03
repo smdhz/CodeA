@@ -104,11 +104,12 @@
   <ItemGroup>
     <Compile Include="Base.cs" />
     <Compile Include="Counter.cs" />
+    <Compile Include="Model\DataModel.cs" />
     <Compile Include="Panel.xaml.cs">
       <DependentUpon>Panel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FileModel.cs" />
+    <Compile Include="Model\FileModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Panel.xaml">
@@ -126,6 +127,7 @@
     <Content Include="KanColleViewerAssemblies\KanColleViewer.Composition.dll" />
     <Content Include="KanColleViewerAssemblies\KanColleWrapper.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

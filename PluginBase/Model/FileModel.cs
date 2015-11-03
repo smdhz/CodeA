@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeA
+namespace CodeA.Model
 {
     [Serializable]
     public class FileModel

@@ -14,16 +14,19 @@ namespace CodeA
     [ExportMetadata("Guid", "320fdf37-1e13-40a5-b5ae-6d7dcd35936b")]
     [ExportMetadata("Title", "CodeA")]
     [ExportMetadata("Description", "周常计数器")]
-    [ExportMetadata("Version", "2.0")]
+    [ExportMetadata("Version", "1.3")]
     [ExportMetadata("Author", "Mystic Monkey")]
     public class Base : IPlugin, ITool
     {
-        private Counter counter = new Counter(Grabacr07.KanColleWrapper.KanColleClient.Current.Proxy);
+        private Counter counter;
 
         public string Name => "CodeA";
 
         public object View => new Panel() { DataContext = counter };
 
-        public void Initialize() { }
+        public void Initialize()
+        {
+            counter = new Counter(Grabacr07.KanColleWrapper.KanColleClient.Current.Proxy);
+        }
     }
 }

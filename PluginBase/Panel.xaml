@@ -18,6 +18,7 @@
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition/>
+            <RowDefinition Height="24"/>
         </Grid.RowDefinitions>
         <TextBlock Text="あ号作戦" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" FontSize="14"/>
         <TextBlock VerticalAlignment="Center" Grid.Column="1">
@@ -76,5 +77,9 @@
         <ProgressBar Grid.Column="2" Grid.Row="3" Value="{Binding Support20}" Maximum="20" Height="18"/>
         <ProgressBar Grid.Column="2" Grid.Row="4" Value="{Binding Ro}" Maximum="50" Height="18"/>
         <ProgressBar Grid.Column="2" Grid.Row="5" Value="{Binding I}" Maximum="20" Height="18"/>
+        <DockPanel Grid.Row="7" Grid.ColumnSpan="3">
+            <Button Padding="10,0" DockPanel.Dock="Right" Command="{Binding UpdateCommand}">更新</Button>
+            <TextBlock Text="{Binding Data.LastUpdate,StringFormat='上次更新：{0}'}"/>
+        </DockPanel>
     </Grid>
 </UserControl>

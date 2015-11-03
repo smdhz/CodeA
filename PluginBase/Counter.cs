@@ -10,6 +10,7 @@ using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models.Raw;
 using Grabacr07.KanColleWrapper.Models;
 using System.ComponentModel;
+using System.Net;
 
 namespace CodeA
 {
@@ -20,17 +21,29 @@ namespace CodeA
             "grabacr.net",
             "KanColleViewer",
             "CodeA.xml");
-        private XmlSerializer serializer = new XmlSerializer(typeof(FileModel));
+        private static readonly string dataPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "grabacr.net",
+            "KanColleViewer",
+            "CodeA_Enemy.xml");
+
+        private XmlSerializer serializer = new XmlSerializer(typeof(Model.FileModel));
         private FileInfo dataFile;
 
+        // 计数参数
+        public Model.DataModel Data { get; private set; }
         // 最后一次回母港
         private DateTime LastPort = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time");
+
+        public Livet.Commands.ViewModelCommand UpdateCommand { get; private set; }
 
         public Counter(KanColleProxy proxy)
         {
             // 注册订阅
             proxy.api_req_sortie_battleresult.TryParse<kcsapi_battleresult>().Subscribe(x => Battle(x.Data));
             proxy.api_port.TryParse<kcsapi_port>().Subscribe(x => Port(x.Data));
+
+            UpdateCommand = new Livet.Commands.ViewModelCommand(update);
 
             // 检查文件
             dataFile = CheckFile();
@@ -41,8 +54,8 @@ namespace CodeA
                     using (FileStream fs = new FileStream(dataFile.FullName, FileMode.Open))
                     {
                         // 读文件
-                        FileModel model = serializer.Deserialize(fs) as FileModel;
-                        
+                        Model.FileModel model = serializer.Deserialize(fs) as Model.FileModel;
+
                         // 比对日期
                         if (model.Date >= GetResetTime())
                         {
@@ -60,6 +73,30 @@ namespace CodeA
                 catch (InvalidOperationException)
                 { dataFile.Delete(); }
             }
+
+            // 更新敌数据
+            if (File.Exists(dataPath))
+            {
+                XmlSerializer serial = new XmlSerializer(typeof(Model.DataModel));
+                using (FileStream fs = new FileStream(dataPath, FileMode.Open))
+                    Data = serial.Deserialize(fs) as Model.DataModel;
+            }
+            else
+                update();
+        }
+
+        private async void update()
+        {
+            HttpWebRequest HttpWReq = (HttpWebRequest)WebRequest.Create("http://mysticmonkey.co.nf/Enemy.xml");
+            HttpWebResponse HttpWResp = (HttpWebResponse)await HttpWReq.GetResponseAsync();
+
+            XmlSerializer serial = new XmlSerializer(typeof(Model.DataModel));
+            Data = serial.Deserialize(HttpWResp.GetResponseStream()) as Model.DataModel;
+            Data.LastUpdate = DateTime.Now;
+            using (FileStream fs = new FileStream(dataPath, FileMode.Create))
+                serial.Serialize(fs, Data);
+            SetEvent(nameof(Data));
+            HttpWResp.Close();
         }
 
         private bool Changed = false;   // 写文件
@@ -74,20 +111,6 @@ namespace CodeA
         public int Support20 { get; set; }
         public int Ro { get; set; }
         public int I { get; set; }
-
-        // 常量表
-        private static readonly string[] Bosses = 
-        { 
-            "敵主力艦隊", "敵主力部隊", "敵機動部隊", "敵通商破壊主力艦隊",
-            "敵通商破壊艦隊", "敵主力打撃群", "敵侵攻中核艦隊",
-            "敵北方侵攻艦隊", "敵キス島包囲艦隊", "深海棲艦泊地艦隊", "深海棲艦北方艦隊中枢", "北方増援部隊主力",
-            "東方派遣艦隊", "東方主力艦隊", "敵東方中枢艦隊",
-            "敵前線司令艦隊", "敵機動部隊本隊", "敵サーモン方面主力艦隊", "敵補給部隊本体", "敵任務部隊本隊",
-            "敵回航中空母", "敵攻略部隊本体", "留守泊地旗艦艦隊"
-        };
-
-        private readonly int[] Supports = new int[] { 513, 526, 558 };                  // ワ
-        private readonly int[] Carriers = new int[] { 510, 523, 560, 512, 525, 528 };   // ヌ、ヲ
 
         /// <summary>
         /// 战斗时调整计数器
@@ -106,25 +129,25 @@ namespace CodeA
                 if (data.api_win_rank == "S")
                     RankS++;
                 // 进 BOSS
-                if (Bosses.Contains(data.api_enemy_info.api_deck_name))
+                if (Data.Bosses.Contains(data.api_enemy_info.api_deck_name))
                 {
                     EnterBoss++;
                     // BOSS 胜利
                     if (data.api_win_rank != "C" & data.api_win_rank != "D")
                         WinBoss++;
                 }
-                SetEvent("Fight", "RankS", "EnterBoss", "WinBoss");
+                SetEvent(nameof(Fight), nameof(RankS), nameof(EnterBoss), nameof(WinBoss));
             }
 
-            int acCount = data.api_ship_id.Where(i => Supports.Contains(i)).Count(),
-                cvCount = data.api_ship_id.Where(i => Carriers.Contains(i)).Count();
+            int acCount = data.api_ship_id.Count(i => Data.Supports.Contains(i)),
+                cvCount = data.api_ship_id.Count(i => Data.Carriers.Contains(i));
 
             // 20补给
             if (misson.Contains(213) & acCount > 0)
             {
                 Changed = true;
                 Support20 += acCount;
-                SetEvent("Support20");
+                SetEvent(nameof(Support20));
             }
 
             // ろ号
@@ -132,7 +155,7 @@ namespace CodeA
             {
                 Changed = true;
                 Ro += acCount;
-                SetEvent("Ro");
+                SetEvent(nameof(Ro));
             }
 
             // い号
@@ -140,7 +163,7 @@ namespace CodeA
             {
                 Changed = true;
                 I += cvCount;
-                SetEvent("I");
+                SetEvent(nameof(I));
             }
         }
 
@@ -157,7 +180,14 @@ namespace CodeA
                 if (dataFile.Exists)
                     dataFile.Delete();
                 Fight = RankS = EnterBoss = WinBoss = Support20 = Ro = I = 0;
-                SetEvent("Fight", "RankS", "EnterBoss", "WinBoss", "Support20", "Ro", "I");
+                SetEvent(
+                    nameof(Fight),
+                    nameof(RankS),
+                    nameof(EnterBoss),
+                    nameof(WinBoss),
+                    nameof(Support20),
+                    nameof(Ro),
+                    nameof(I));
             }
 
             // 写文件
@@ -165,7 +195,7 @@ namespace CodeA
             {
                 Changed = false;
                 using (FileStream fs = new FileStream(dataFile.FullName, FileMode.Create))
-                    serializer.Serialize(fs, new FileModel()
+                    serializer.Serialize(fs, new Model.FileModel()
                     {
                         Date = jpNow,
 
