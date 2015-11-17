@@ -75,30 +75,20 @@ namespace CodeA
             }
 
             // 更新敌数据
+            XmlSerializer serial = new XmlSerializer(typeof(Model.DataModel));
             if (File.Exists(dataPath))
             {
-                XmlSerializer serial = new XmlSerializer(typeof(Model.DataModel));
                 using (FileStream fs = new FileStream(dataPath, FileMode.Open))
                     Data = serial.Deserialize(fs) as Model.DataModel;
             }
             else
+            {
+                using (Stream rs = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("CodeA.Enemy.xml"))
+                    Data = serial.Deserialize(rs) as Model.DataModel;
                 update();
+            }
         }
-
-        private async void update()
-        {
-            HttpWebRequest HttpWReq = (HttpWebRequest)WebRequest.Create("http://mysticmonkey.co.nf/Enemy.xml");
-            HttpWebResponse HttpWResp = (HttpWebResponse)await HttpWReq.GetResponseAsync();
-
-            XmlSerializer serial = new XmlSerializer(typeof(Model.DataModel));
-            Data = serial.Deserialize(HttpWResp.GetResponseStream()) as Model.DataModel;
-            Data.LastUpdate = DateTime.Now;
-            using (FileStream fs = new FileStream(dataPath, FileMode.Create))
-                serial.Serialize(fs, Data);
-            SetEvent(nameof(Data));
-            HttpWResp.Close();
-        }
-
+        
         private bool Changed = false;   // 写文件
 
         // あ
@@ -227,6 +217,34 @@ namespace CodeA
             Offset--;
 
             return now.Date.AddDays(-Offset).AddHours(5);
+        }
+
+        /// <summary>
+        /// 从服务器刷新数据
+        /// </summary>
+        private async void update()
+        {
+            try
+            {
+                HttpWebRequest HttpWReq = (HttpWebRequest)WebRequest.Create("http://mysticmonkey.co.nf/Enemy.xml");
+                HttpWebResponse HttpWResp = (HttpWebResponse)await HttpWReq.GetResponseAsync();
+
+                XmlSerializer serial = new XmlSerializer(typeof(Model.DataModel));
+                Data = serial.Deserialize(HttpWResp.GetResponseStream()) as Model.DataModel;
+                Data.LastUpdate = DateTime.Now;
+                using (FileStream fs = new FileStream(dataPath, FileMode.Create))
+                    serial.Serialize(fs, Data);
+                SetEvent(nameof(Data));
+                HttpWResp.Close();
+            }
+            catch (WebException e)
+            {
+                System.Windows.MessageBox.Show(
+                    "我们好像被河蟹了" + Environment.NewLine + "获取数据时" + e.Message,
+                    AppDomain.CurrentDomain.FriendlyName,
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Warning);
+            }
         }
 
         /// <summary>
