@@ -41,6 +41,7 @@ namespace CodeA
         {
             // 注册订阅
             proxy.api_req_sortie_battleresult.TryParse<kcsapi_battleresult>().Subscribe(x => Battle(x.Data));
+            proxy.api_req_combined_battle_battleresult.TryParse<kcsapi_battleresult>().Subscribe(x => Battle(x.Data));
             proxy.api_port.TryParse<kcsapi_port>().Subscribe(x => Port(x.Data));
 
             UpdateCommand = new Livet.Commands.ViewModelCommand(update);
