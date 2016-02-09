@@ -196,14 +196,14 @@ namespace CodeA
                     {
                         Date = jpNow,
 
-                        Fight = this.Fight,
-                        RankS = this.RankS,
-                        EnterBoss = this.EnterBoss,
-                        WinBoss = this.WinBoss,
+                        Fight = Fight,
+                        RankS = RankS,
+                        EnterBoss = EnterBoss,
+                        WinBoss = WinBoss,
 
-                        Support20 = this.Support20,
-                        Ro = this.Ro,
-                        I = this.I
+                        Support20 = Support20,
+                        Ro = Ro,
+                        I = I
                     });
             }
             LastPort = jpNow;
