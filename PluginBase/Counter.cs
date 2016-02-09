@@ -31,7 +31,13 @@ namespace CodeA
         private FileInfo dataFile;
 
         // 计数参数
-        public Model.DataModel Data { get; private set; }
+        private Model.DataModel _data;
+        public Model.DataModel Data
+        {
+            get { return _data; }
+            private set { SetEvent(nameof(Data)); }
+        }
+
         // 最后一次回母港
         private DateTime LastPort = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.Now, "Tokyo Standard Time");
 
