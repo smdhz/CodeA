@@ -233,7 +233,7 @@ namespace CodeA
         {
             try
             {
-                HttpWebRequest HttpWReq = (HttpWebRequest)WebRequest.Create("http://mysticmonkey.co.nf/Enemy.xml");
+                HttpWebRequest HttpWReq = (HttpWebRequest)WebRequest.Create("http://smdhz.github.io/Files/Enemy.xml");
                 HttpWebResponse HttpWResp = (HttpWebResponse)await HttpWReq.GetResponseAsync();
 
                 XmlSerializer serial = new XmlSerializer(typeof(Model.DataModel));
@@ -244,14 +244,7 @@ namespace CodeA
                 SetEvent(nameof(Data));
                 HttpWResp.Close();
             }
-            catch (WebException e)
-            {
-                System.Windows.MessageBox.Show(
-                    "我们好像被河蟹了" + Environment.NewLine + "获取数据时" + e.Message,
-                    AppDomain.CurrentDomain.FriendlyName,
-                    System.Windows.MessageBoxButton.OK,
-                    System.Windows.MessageBoxImage.Warning);
-            }
+            catch (WebException) { }
         }
 
         /// <summary>
